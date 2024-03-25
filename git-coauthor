@@ -1,0 +1,62 @@
+#!/usr/bin/env bash
+
+help() {
+    echo "Usage: git coauthor [(-m | --message) <message>] [[(-a | --author) <author>]...]"
+    exit 1
+}
+
+if [ $# -eq 0 ]; then
+    help
+fi
+
+message_parts=()
+co_authors=()
+
+
+while [ $# -gt 0 ]
+do
+    case "$1" in
+        -m | --message )
+            message_parts+=("-m" "\"$2\"")
+            shift 2
+            ;;
+        -a | --author )
+            co_authors+=("$2")
+            shift 2
+            ;;
+        -- )
+            shift;
+            break
+            ;;
+        * )
+            printf "\033[1;33mUnexpected option:\033[0m $1\n"
+            help
+            ;;
+    esac
+done
+
+if [ ${#message_parts[@]} -eq 0 ]
+then
+    printf "\033[1;33mError:\033[0m No message provided.\n"
+    help
+fi
+if [ ${#co_authors[@]} -eq 0 ]
+then
+    printf "\033[1;33mError:\033[0m No co-authors provided.\n"
+    help
+fi
+
+for co_author in $co_authors
+do
+    lines=`grep = <(grep -A2 "\[$co_author\]" ~/.gitauthors) | sed -e 's/ *= */=/g' -e 's/^ *//' -e 's/ *$//'`
+    name=`echo "$lines" | grep -o 'name=.*$' | cut -d '=' -f 2`
+    email=`echo "$lines" | grep -o 'email=.*$' | cut -d '=' -f 2`
+    if [ -z "$name" ] || [ -z "$email" ]
+    then
+        printf "\033[1;33mWarning:\033[0m $co_author not found in ~/.gitauthors. Skipping.\n"
+        continue
+    fi
+    message_parts+=("-m" "\"Co-authored-by: $name <$email>\"")
+done
+
+echo ${message_parts[*]} | xargs git commit
