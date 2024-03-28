@@ -1,0 +1,48 @@
+.Dd $Mdocdate$
+.Dt GIT-COAUTHOR 1
+.Os
+.Sh NAME
+.Nm git coauthor
+.Nd easily add co-authors for Git commits
+.Sh SYNOPSIS
+.Nm
+.Op Fl m | -message Ar message
+.Op Fl a | -author Ar handle
+.Sh DESCRIPTION
+The
+.Nm
+utility makes it easy to add co-authors to your Git commits. By only specifying the
+co-author handle, all of their information is added to the commit message. The
+co-author's handle is searched in the co-authors file,
+whose location is specified using the
+.Ev COAUTHORS_PATH
+environment variable. The command will commit all staged files in the current
+working directory.
+.Bl -tag -width ".Fl m | -message Ar message"
+.It Fl m | -message Ar message
+Adds a message to the commit. Can be specified multiple times to add multiple messages.
+.It Fl a | -author Ar handle
+Adds a co-author to the commit. The <handle> must be present in the co-authors file. Can be specified multiple times to add multiple co-authors.
+.El
+.Sh IMPLEMENTATION NOTES
+The
+.Nm
+utility depends on the existance of a co-authors file. This file must be an INI file, just like the Git config file. This is an example of a valid co-authors file:
+TODO
+.Sh ENVIRONMENT
+The following environment variables affect the execution of
+.Nm :
+.Bl -tag -width ".Ev COAUTHORS_PATH"
+.It Ev COAUTHORS_PATH
+TODO
+.El
+.Sh SEE ALSO
+.Xr git 1 ,
+.Xr git-commit 1
+.Sh AUTHOR
+
+.SH AUTHOR
+The
+.Nm
+reference was written by
+.An Alejo Flores Lucey Aq Mt alejo@misterflores.com .
