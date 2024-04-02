@@ -28,13 +28,26 @@ Adds a co-author to the commit. The <handle> must be present in the co-authors f
 The
 .Nm
 utility depends on the existance of a co-authors file. This file must be an INI file, just like the Git config file. This is an example of a valid co-authors file:
-TODO
+.Bd -literal
+    [harry]
+        name = Harry Potter
+        email = hpotter@hogwarts.edu
+
+    [hermione]
+        name = Hermione Granger
+        email = hgranger@hogwarts.edu
+
+    [ron]
+        name = Ron Weasley
+        email = rweasley@hogwarts.edu
+.Ed
 .Sh ENVIRONMENT
 The following environment variables affect the execution of
 .Nm :
 .Bl -tag -width ".Ev COAUTHORS_PATH"
 .It Ev COAUTHORS_PATH
-TODO
+The path to the co-authors file. If not set, the default value is
+.Pa ~/.gitauthors
 .El
 .Sh SEE ALSO
 .Xr git 1 ,
