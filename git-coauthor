@@ -9,14 +9,14 @@ if [ $# -eq 0 ]; then
     help
 fi
 
-message_parts=()
+message_parts=""
 co_authors=()
 
 while [ $# -gt 0 ]
 do
     case "$1" in
         -m | --message )
-            message_parts+=("-m" "\"$2\"")
+            message_parts+="$2\n\n"
             shift 2
             ;;
         -a | --author )
@@ -63,7 +63,7 @@ if [ ! -r $COAUTHORS_FILE ]; then
     exit 1
 fi
 
-for co_author in $co_authors
+for co_author in ${co_authors[@]}
 do
     lines=`grep = <(grep -A2 "\[$co_author\]" $COAUTHORS_FILE) | sed -e 's/ *= */=/g' -e 's/^ *//' -e 's/ *$//'`
     name=`echo "$lines" | grep -o 'name=.*$' | cut -d '=' -f 2`
@@ -73,7 +73,7 @@ do
         printf "\033[1;33mWarning:\033[0m $co_author not found in $COAUTHORS_FILE. Skipping.\n"
         continue
     fi
-    message_parts+=("-m" "\"Co-authored-by: $name <$email>\"")
+    message_parts+="Co-authored-by: $name <$email>\n"
 done
 
-echo ${message_parts[*]} | xargs git commit
+git commit -m "$(echo -e "$message_parts")"
